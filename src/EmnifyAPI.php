@@ -208,8 +208,7 @@ class EmnifyAPI {
                 break;
         }
 
-        echo $this->response->getStatusCode();
-
+        
         switch ($this->response->getStatusCode()) {
             case 200:
                 $this->request_successful = true;
