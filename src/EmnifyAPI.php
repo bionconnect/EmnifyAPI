@@ -42,7 +42,21 @@ class EmnifyAPI {
         $endPoint = $this->getEndPoint($iccid)[0];
         return $this->makeRequest("get", "endpoint/" . $endPoint->id . "/connectivity");
     }
+ public function getStats($iccid) {
 
+        $endPoint = $this->getEndPoint($iccid)[0];
+        
+       $stats = $this->makeRequest("get", "endpoint/" . $endPoint->id . "/stats");
+       
+      
+           return $stats ;   
+     
+       
+    }
+    
+
+    
+    
     public function GetLocationStatus($iccid) {
         $endPoint = $this->getEndPoint($iccid)[0];
         return $this->makeRequest("get", "endpoint/" . $endPoint->id . "/connectivity_info");
@@ -51,14 +65,14 @@ class EmnifyAPI {
     public function changeEndPointServiceProfile($iccid, $new_id_service_profile) {
         $endPoint = $this->getEndPoint($iccid)[0];
         $arrUpdate = ["service_profile" => ["id" => $new_id_service_profile]];
-        $this->updateEndPoint($id_end_point, $arrUpdate);
+        $this->updateEndPoint($endPoint->id, $arrUpdate);
     }
 
     public function getSims($iccid = null, $inactive_new = false) {
         $query = "";
 
         if ($inactive_new) {
-            $query = "status:" . STATUS_SIM_NO_USADA;
+            $query = "status:" . self::STATUS_SIM_NO_USADA;
         }
 
         if (isset($iccid)) {
@@ -187,6 +201,7 @@ class EmnifyAPI {
             'Accept' => 'application/json',
             'Authorization' => 'Bearer ' . $this->auth_token];
 
+
         switch ($http_verb) {
             case 'post':
                 $this->response = $this->client->post($this->getUrlApi($method), ['body' => json_encode($args), 'headers' => $headers]);
@@ -208,7 +223,7 @@ class EmnifyAPI {
                 break;
         }
 
-        
+       
         switch ($this->response->getStatusCode()) {
             case 200:
                 $this->request_successful = true;
