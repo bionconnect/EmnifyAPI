@@ -33,30 +33,31 @@ class EmnifyAPI {
         ]);
 
         $this->api_token = config('emnifyapi.api_token');
-        $this->api_endpoint =config('emnifyapi.api_endpoint');
+        $this->api_endpoint = config('emnifyapi.api_endpoint');
         $this->autenticate();
     }
 
     public function GetConnectionStatus($iccid) {
-
-        $endPoint = $this->getEndPoint($iccid)[0];
-        return $this->makeRequest("get", "endpoint/" . $endPoint->id . "/connectivity");
+        $endPoint = $this->getEndPoint($iccid);
+        if (count($endPoint) > 0) {
+            return $this->makeRequest("get", "endpoint/" . $endPoint[0]->id . "/connectivity");
+            return $stats;
+        } else {
+            return false;
+        }
     }
- public function getStats($iccid) {
 
-        $endPoint = $this->getEndPoint($iccid)[0];
-        
-       $stats = $this->makeRequest("get", "endpoint/" . $endPoint->id . "/stats");
-       
-      
-           return $stats ;   
-     
-       
+    public function getStats($iccid) {
+
+        $endPoint = $this->getEndPoint($iccid);
+        if (count($endPoint) > 0) {
+            return $this->makeRequest("get", "endpoint/" . $endPoint[0]->id . "/stats");
+            return $stats;
+        } else {
+            return false;
+        }
     }
-    
 
-    
-    
     public function GetLocationStatus($iccid) {
         $endPoint = $this->getEndPoint($iccid)[0];
         return $this->makeRequest("get", "endpoint/" . $endPoint->id . "/connectivity_info");
@@ -223,7 +224,7 @@ class EmnifyAPI {
                 break;
         }
 
-       
+
         switch ($this->response->getStatusCode()) {
             case 200:
                 $this->request_successful = true;
